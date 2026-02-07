@@ -3,6 +3,7 @@ package com.flocier.domain.agent.adapter.repository;
 import com.flocier.domain.agent.model.vo.*;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IAgentRepository {
     List<AiClientApiVO> queryAiClientApiVOListByClientIds(List<String> clientIdList);
@@ -12,6 +13,8 @@ public interface IAgentRepository {
     List<AiClientToolMcpVO> AiClientToolMcpVOByClientIds(List<String> clientIdList);
 
     List<AiClientSystemPromptVO> AiClientSystemPromptVOByClientIds(List<String> clientIdList);
+
+    Map<String,AiClientSystemPromptVO> queryAiClientSystemPromptMapByClientIds(List<String> clientIdList);
 
     List<AiClientAdvisorVO> AiClientAdvisorVOByClientIds(List<String> clientIdList);
 

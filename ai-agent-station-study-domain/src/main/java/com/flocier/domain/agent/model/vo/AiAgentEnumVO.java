@@ -51,6 +51,7 @@ public enum AiAgentEnumVO {
             CODE_MAP.put(aiAgentEnumVO.getCode(),aiAgentEnumVO);
         }
     }
+
     public static AiAgentEnumVO getByCode(String code){
         if(code ==null){
             return null;

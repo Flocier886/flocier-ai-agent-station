@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.flocier.domain.agent.model.vo.AiAgentEnumVO.*;
 
@@ -187,12 +188,12 @@ public class AgentRepository implements IAgentRepository {
 
                                 try {
                                     if ("sse".equals(transportType)) {
-                                        // 解析SSE配置
+                                        // TODO解析SSE配置
                                         ObjectMapper objectMapper = new ObjectMapper();
                                         AiClientToolMcpVO.TransportConfigSse transportConfigSse = objectMapper.readValue(transportConfig, AiClientToolMcpVO.TransportConfigSse.class);
                                         mcpVO.setTransportConfigSse(transportConfigSse);
                                     } else if ("stdio".equals(transportType)) {
-                                        // 解析STDIO配置
+                                        // TODO解析STDIO配置
                                         Map<String, AiClientToolMcpVO.TransportConfigStdio.Stdio> stdio = JSON.parseObject(transportConfig,
                                                 new TypeReference<>() {
                                                 });
@@ -260,6 +261,24 @@ public class AgentRepository implements IAgentRepository {
 
         return result;
 
+    }
+
+    @Override
+    public Map<String, AiClientSystemPromptVO> queryAiClientSystemPromptMapByClientIds(List<String> clientIdList) {
+        List<AiClientSystemPromptVO> aiClientSystemPromptVOS = AiClientSystemPromptVOByClientIds(clientIdList);
+        if(aiClientSystemPromptVOS==null || aiClientSystemPromptVOS.isEmpty()){
+            return Collections.emptyMap();
+        }
+        return aiClientSystemPromptVOS.stream()
+                .map(prompt->AiClientSystemPromptVO.builder()
+                        .promptId(prompt.getPromptId())
+                        .promptContent(prompt.getPromptContent())
+                        .build())
+                .collect(Collectors.toMap(
+                        AiClientSystemPromptVO::getPromptId,  //key
+                        prompt->prompt,  //value
+                        (existing,replacement)->existing  //若有重复，只保留一个
+                ));
     }
 
     @Override
