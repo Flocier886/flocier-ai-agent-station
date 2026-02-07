@@ -1,0 +1,54 @@
+package com.flocier.domain.agent.service.armory;
+
+import cn.bugstack.wrench.design.framework.tree.StrategyHandler;
+import com.alibaba.fastjson.JSON;
+import com.flocier.domain.agent.model.entity.ArmoryCommandEntity;
+import com.flocier.domain.agent.model.vo.AiAgentEnumVO;
+import com.flocier.domain.agent.service.armory.business.data.ILoadDataStrategy;
+import com.flocier.domain.agent.service.armory.factory.DefaultArmoryStrategyFactory;
+import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+
+@Slf4j
+@Service
+public class RootNode extends AbstractArmorySupport{
+    private final Map<String, ILoadDataStrategy> loadDataStrategyMap;
+
+    @Resource
+    private AiClientApiNode aiClientApiNode;
+
+    public RootNode(Map<String, ILoadDataStrategy> loadDataStrategyMap) {
+        this.loadDataStrategyMap = loadDataStrategyMap;
+    }
+
+    /**
+     * 多线程池，里面的逻辑只实现异步处理信息的部分
+     * */
+    @Override
+    protected void multiThread(ArmoryCommandEntity requestParameter, DefaultArmoryStrategyFactory.DynamicContext dynamicContext) throws ExecutionException, InterruptedException, TimeoutException {
+        //加载数据
+        ILoadDataStrategy loadDataStrategy=loadDataStrategyMap.get(requestParameter.getLoadDataStrategy());
+        loadDataStrategy.loadData(requestParameter,dynamicContext);
+    }
+    /**
+     * 真正处理业务逻辑的部分
+     * */
+    @Override
+    protected String doApply(ArmoryCommandEntity armoryCommandEntity, DefaultArmoryStrategyFactory.DynamicContext dynamicContext) throws Exception {
+        log.info("Ai Agent 构建，数据加载节点 {}", JSON.toJSONString(armoryCommandEntity));
+        return router(armoryCommandEntity,dynamicContext);
+    }
+
+    /**
+     * 路由部分，根据结果来查找下一个树节点
+     * */
+    @Override
+    public StrategyHandler<ArmoryCommandEntity, DefaultArmoryStrategyFactory.DynamicContext, String> get(ArmoryCommandEntity armoryCommandEntity, DefaultArmoryStrategyFactory.DynamicContext dynamicContext) throws Exception {
+        return aiClientApiNode;
+    }
+}
