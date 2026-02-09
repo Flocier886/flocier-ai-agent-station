@@ -484,4 +484,35 @@ public class AgentRepository implements IAgentRepository {
         return result;
 
     }
+
+    @Override
+    public Map<String, AiAgentClientFlowConfigVO> queryAiAgentClientFlowConfig(String aiAgentId) {
+        if (aiAgentId==null || aiAgentId.trim().isEmpty()){
+            return Map.of();
+        }
+        try {
+            List<AiAgentFlowConfig> flowConfigs=aiAgentFlowConfigDao.queryByAgentId(aiAgentId);
+            if (flowConfigs == null || flowConfigs.isEmpty()) {
+                return Map.of();
+            }
+            Map<String,AiAgentClientFlowConfigVO>aiAgentClientFlowConfigVOMap=new HashMap<>();
+            for (AiAgentFlowConfig flowConfig:flowConfigs){
+                AiAgentClientFlowConfigVO configVO = AiAgentClientFlowConfigVO.builder()
+                        .clientId(flowConfig.getClientId())
+                        .clientName(flowConfig.getClientName())
+                        .clientType(flowConfig.getClientType())
+                        .sequence(flowConfig.getSequence())
+                        .build();
+                aiAgentClientFlowConfigVOMap.put(configVO.getClientType(),configVO);
+            }
+            return aiAgentClientFlowConfigVOMap;
+
+        }catch (NumberFormatException e){
+            log.error("Invalid aiAgentId format: {}", aiAgentId, e);
+            return Map.of();
+        }catch (Exception e){
+            log.error("Query ai agent client flow config failed, aiAgentId: {}", aiAgentId, e);
+            return Map.of();
+        }
+    }
 }
