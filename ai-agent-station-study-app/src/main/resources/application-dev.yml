@@ -45,6 +45,11 @@ spring:
     openai:
       base-url: https://apis.itedus.cn
       api-key: sk-G7PsyA5CIYjGKjiE2917F2506bE645Ed9f3fAeE8B5Ae3086
+    agent:
+      auto-config:
+        enabled: true
+        client-ids: 3101,3102,3103,3104
+
 
 
 # MyBatis 配置【如需使用记得打开】
