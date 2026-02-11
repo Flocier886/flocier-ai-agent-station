@@ -25,4 +25,6 @@ public interface IAgentRepository {
     List<AiClientModelVO> queryAiClientModelVOListByModelIds(List<String> modelIdList);
 
     Map<String, AiAgentClientFlowConfigVO> queryAiAgentClientFlowConfig(String aiAgentId);
+
+    AiAgentVO queryAiAgentByAgentId(String aiAgentId);
 }

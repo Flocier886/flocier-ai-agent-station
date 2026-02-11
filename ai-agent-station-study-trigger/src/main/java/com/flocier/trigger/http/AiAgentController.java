@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.flocier.api.IAiAgentService;
 import com.flocier.api.dto.AutoAgentRequestDTO;
 import com.flocier.domain.agent.model.entity.ExecuteCommandEntity;
+import com.flocier.domain.agent.service.IAgentDispatchService;
 import com.flocier.domain.agent.service.execute.IExecuteStrategy;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,10 +19,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 @RequestMapping("/api/v1/agent")
 @CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS})
 public class AiAgentController implements IAiAgentService {
-    @Resource(name = "autoAgentExecuteStrategy")
-    private IExecuteStrategy autoAgentExecuteStrategy;
     @Resource
-    private ThreadPoolExecutor threadPoolExecutor;
+    private IAgentDispatchService agentDispatchService;
 
     @Override
     @PostMapping("auto_agent")
@@ -42,25 +41,9 @@ public class AiAgentController implements IAiAgentService {
                     .sessionId(request.getSessionId())
                     .maxStep(request.getMaxStep())
                     .build();
-            //异步执行AutoAgent
-            threadPoolExecutor.execute(()->{
-                try {
-                    autoAgentExecuteStrategy.execute(commandEntity,emitter);
-                }catch (Exception e){
-                    log.error("AutoAgent执行异常：{}", e.getMessage(), e);
-                    try {
-                        emitter.send("执行异常：" + e.getMessage());
-                    } catch (Exception ex) {
-                        log.error("发送异常信息失败：{}", ex.getMessage(), ex);
-                    }
-                }finally {
-                    try {
-                        emitter.complete();
-                    } catch (Exception e) {
-                        log.error("完成流式输出失败：{}", e.getMessage(), e);
-                    }
-                }
-            });
+            //调度处理
+            agentDispatchService.dispatch(commandEntity, emitter);
+
             return emitter;
         }catch (Exception e){
             log.error("AutoAgent请求处理异常：{}", e.getMessage(), e);

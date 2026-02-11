@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
-@Service
+@Service("autoAgentExecuteStrategy")
 @Slf4j
 public class AutoAgentExecuteStrategy implements IExecuteStrategy {
     @Resource

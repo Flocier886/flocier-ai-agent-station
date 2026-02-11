@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
 @Slf4j
-@Service
+@Service("flowAgentExecuteStrategy")
 public class FlowExecuteStrategy implements IExecuteStrategy {
     @Resource
     private DefaultFlowAgentExecuteStrategyFactory defaultFlowAgentExecuteStrategyFactory;
