@@ -1,9 +1,9 @@
-package com.flocier.domain.agent.service.armory;
+package com.flocier.domain.agent.service.armory.node;
 
 import cn.bugstack.wrench.design.framework.tree.AbstractMultiThreadStrategyRouter;
 import com.flocier.domain.agent.adapter.repository.IAgentRepository;
 import com.flocier.domain.agent.model.entity.ArmoryCommandEntity;
-import com.flocier.domain.agent.service.armory.factory.DefaultArmoryStrategyFactory;
+import com.flocier.domain.agent.service.armory.node.factory.DefaultArmoryStrategyFactory;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

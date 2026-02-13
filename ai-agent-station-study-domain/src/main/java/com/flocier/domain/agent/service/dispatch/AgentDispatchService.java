@@ -4,7 +4,7 @@ import com.flocier.domain.agent.adapter.repository.IAgentRepository;
 import com.flocier.domain.agent.model.entity.ExecuteCommandEntity;
 import com.flocier.domain.agent.model.vo.AiAgentVO;
 import com.flocier.domain.agent.service.IAgentDispatchService;
-import com.flocier.domain.agent.service.execute.IExecuteStrategy;
+import com.flocier.domain.agent.service.IExecuteStrategy;
 import com.flocier.types.exception.BizException;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;

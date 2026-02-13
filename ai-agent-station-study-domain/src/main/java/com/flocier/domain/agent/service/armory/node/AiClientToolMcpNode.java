@@ -1,12 +1,11 @@
-package com.flocier.domain.agent.service.armory;
+package com.flocier.domain.agent.service.armory.node;
 
 import cn.bugstack.wrench.design.framework.tree.StrategyHandler;
 import com.alibaba.fastjson.JSON;
 import com.flocier.domain.agent.model.entity.ArmoryCommandEntity;
 import com.flocier.domain.agent.model.vo.AiAgentEnumVO;
 import com.flocier.domain.agent.model.vo.AiClientToolMcpVO;
-import com.flocier.domain.agent.service.armory.factory.DefaultArmoryStrategyFactory;
-import com.google.j2objc.annotations.ObjectiveCName;
+import com.flocier.domain.agent.service.armory.node.factory.DefaultArmoryStrategyFactory;
 import io.modelcontextprotocol.client.McpClient;
 import io.modelcontextprotocol.client.McpSyncClient;
 import io.modelcontextprotocol.client.transport.HttpClientSseClientTransport;
@@ -23,7 +22,7 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class AiClientToolMcpNode extends AbstractArmorySupport{
+public class AiClientToolMcpNode extends AbstractArmorySupport {
     @Resource
     private AiClientModelNode aiClientModelNode;
 

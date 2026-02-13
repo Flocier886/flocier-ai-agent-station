@@ -1,8 +1,8 @@
-package com.flocier.domain.agent.service.armory.factory;
+package com.flocier.domain.agent.service.armory.node.factory;
 
 import cn.bugstack.wrench.design.framework.tree.StrategyHandler;
 import com.flocier.domain.agent.model.entity.ArmoryCommandEntity;
-import com.flocier.domain.agent.service.armory.RootNode;
+import com.flocier.domain.agent.service.armory.node.RootNode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

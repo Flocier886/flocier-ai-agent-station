@@ -3,7 +3,7 @@ package com.flocier.config;
 import cn.bugstack.wrench.design.framework.tree.StrategyHandler;
 import com.flocier.domain.agent.model.entity.ArmoryCommandEntity;
 import com.flocier.domain.agent.model.vo.AiAgentEnumVO;
-import com.flocier.domain.agent.service.armory.factory.DefaultArmoryStrategyFactory;
+import com.flocier.domain.agent.service.armory.node.factory.DefaultArmoryStrategyFactory;
 import com.flocier.types.common.Constants;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;

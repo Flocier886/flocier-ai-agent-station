@@ -12,28 +12,35 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AutoAgentRequestDTO implements Serializable {
+public class AiClientRagOrderRequestDTO implements Serializable {
+
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * AI智能体ID
+     * 主键ID（更新时使用）
      */
-    private String aiAgentId;
+    private Long id;
 
     /**
-     * 用户消息
+     * 知识库ID
      */
-    private String message;
+    private String ragId;
 
     /**
-     * 会话ID
+     * 知识库名称
      */
-    private String sessionId;
+    private String ragName;
 
     /**
-     * 最大执行步数
+     * 知识标签
      */
-    private Integer maxStep;
+    private String knowledgeTag;
+
+    /**
+     * 状态(0:禁用,1:启用)
+     */
+    private Integer status;
 
 }
+

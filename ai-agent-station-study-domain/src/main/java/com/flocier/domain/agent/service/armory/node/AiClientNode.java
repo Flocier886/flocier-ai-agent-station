@@ -1,13 +1,12 @@
-package com.flocier.domain.agent.service.armory;
+package com.flocier.domain.agent.service.armory.node;
 
 import cn.bugstack.wrench.design.framework.tree.StrategyHandler;
 import com.alibaba.fastjson.JSON;
 import com.flocier.domain.agent.model.entity.ArmoryCommandEntity;
 import com.flocier.domain.agent.model.vo.AiAgentEnumVO;
-import com.flocier.domain.agent.model.vo.AiClientAdvisorVO;
 import com.flocier.domain.agent.model.vo.AiClientSystemPromptVO;
 import com.flocier.domain.agent.model.vo.AiClientVO;
-import com.flocier.domain.agent.service.armory.factory.DefaultArmoryStrategyFactory;
+import com.flocier.domain.agent.service.armory.node.factory.DefaultArmoryStrategyFactory;
 import io.modelcontextprotocol.client.McpSyncClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
@@ -22,7 +21,7 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class AiClientNode extends AbstractArmorySupport{
+public class AiClientNode extends AbstractArmorySupport {
     @Override
     protected String doApply(ArmoryCommandEntity armoryCommandEntity, DefaultArmoryStrategyFactory.DynamicContext dynamicContext) throws Exception {
         log.info("Ai Agent 构建节点，客户端{}", JSON.toJSONString(armoryCommandEntity));

@@ -1,4 +1,4 @@
-package com.flocier.domain.agent.service.armory.factory.element;
+package com.flocier.domain.agent.service.armory.node.factory.element;
 
 import com.alibaba.fastjson.JSON;
 import org.springframework.ai.chat.client.ChatClientRequest;

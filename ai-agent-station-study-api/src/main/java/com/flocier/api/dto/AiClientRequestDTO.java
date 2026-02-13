@@ -10,30 +10,35 @@ import java.io.Serializable;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class AutoAgentRequestDTO implements Serializable {
+@AllArgsConstructor
+public class AiClientRequestDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * AI智能体ID
+     * 主键ID（更新时使用）
      */
-    private String aiAgentId;
+    private Long id;
 
     /**
-     * 用户消息
+     * 客户端ID
      */
-    private String message;
+    private String clientId;
 
     /**
-     * 会话ID
+     * 客户端名称
      */
-    private String sessionId;
+    private String clientName;
 
     /**
-     * 最大执行步数
+     * 描述
      */
-    private Integer maxStep;
+    private String description;
+
+    /**
+     * 状态(0:禁用,1:启用)
+     */
+    private Integer status;
 
 }

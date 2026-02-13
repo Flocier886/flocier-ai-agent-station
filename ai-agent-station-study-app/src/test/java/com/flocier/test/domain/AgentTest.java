@@ -4,7 +4,7 @@ import cn.bugstack.wrench.design.framework.tree.StrategyHandler;
 import com.alibaba.fastjson.JSON;
 import com.flocier.domain.agent.model.entity.ArmoryCommandEntity;
 import com.flocier.domain.agent.model.vo.AiAgentEnumVO;
-import com.flocier.domain.agent.service.armory.factory.DefaultArmoryStrategyFactory;
+import com.flocier.domain.agent.service.armory.node.factory.DefaultArmoryStrategyFactory;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;

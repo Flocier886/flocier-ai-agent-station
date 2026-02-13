@@ -1,16 +1,14 @@
-package com.flocier.domain.agent.service.armory;
+package com.flocier.domain.agent.service.armory.node;
 
 import cn.bugstack.wrench.design.framework.tree.StrategyHandler;
 import com.alibaba.fastjson.JSON;
 import com.flocier.domain.agent.model.entity.ArmoryCommandEntity;
 import com.flocier.domain.agent.model.vo.AiAgentEnumVO;
 import com.flocier.domain.agent.model.vo.AiClientModelVO;
-import com.flocier.domain.agent.service.armory.factory.DefaultArmoryStrategyFactory;
-import io.modelcontextprotocol.client.McpAsyncClient;
+import com.flocier.domain.agent.service.armory.node.factory.DefaultArmoryStrategyFactory;
 import io.modelcontextprotocol.client.McpSyncClient;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.mcp.SyncMcpToolCallback;
 import org.springframework.ai.mcp.SyncMcpToolCallbackProvider;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.openai.OpenAiChatOptions;
@@ -22,7 +20,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class AiClientModelNode extends AbstractArmorySupport{
+public class AiClientModelNode extends AbstractArmorySupport {
     @Resource
     private AiClientAdvisorNode aiClientAdvisorNode;
     @Override

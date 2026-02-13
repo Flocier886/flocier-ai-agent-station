@@ -550,4 +550,51 @@ public class AgentRepository implements IAgentRepository {
         }
         return aiAgentClientFlowConfigVOS;
     }
+
+    @Override
+    public List<AiAgentVO> queryAvailableAgents() {
+        List<AiAgent> aiAgents = aiAgentDao.queryEnabledAgents();
+        List<AiAgentVO> aiAgentVOS = new ArrayList<>();
+        for (AiAgent aiAgent : aiAgents) {
+            aiAgentVOS.add(AiAgentVO.builder()
+                    .agentId(aiAgent.getAgentId())
+                    .agentName(aiAgent.getAgentName())
+                    .description(aiAgent.getDescription())
+                    .channel(aiAgent.getChannel())
+                    .strategy(aiAgent.getStrategy())
+                    .status(aiAgent.getStatus())
+                    .build());
+        }
+        return aiAgentVOS;
+    }
+
+    @Override
+    public List<AiAgentClientFlowConfigVO> queryAiAgentClientsByAgentId(String agentId) {
+        List<AiAgentClientFlowConfigVO> aiAgentClientFlowConfigVOS = new ArrayList<>();
+
+        List<AiAgentFlowConfig> flowConfigs = aiAgentFlowConfigDao.queryByAgentId(agentId);
+        for (AiAgentFlowConfig flowConfig : flowConfigs) {
+            AiAgentClientFlowConfigVO configVO = AiAgentClientFlowConfigVO.builder()
+                    .clientId(flowConfig.getClientId())
+                    .clientName(flowConfig.getClientName())
+                    .clientType(flowConfig.getClientType())
+                    .sequence(flowConfig.getSequence())
+                    .stepPrompt(flowConfig.getStepPrompt())
+                    .build();
+
+            aiAgentClientFlowConfigVOS.add(configVO);
+        }
+
+        return aiAgentClientFlowConfigVOS;
+
+    }
+
+    @Override
+    public void createTagOrder(AiRagOrderVO aiRagOrderVO) {
+        AiClientRagOrder aiRagOrder = new AiClientRagOrder();
+        aiRagOrder.setRagName(aiRagOrderVO.getRagName());
+        aiRagOrder.setKnowledgeTag(aiRagOrderVO.getKnowledgeTag());
+        aiRagOrder.setStatus(1);
+        aiClientRagOrderDao.insert(aiRagOrder);
+    }
 }

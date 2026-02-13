@@ -10,30 +10,31 @@ import java.io.Serializable;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class AutoAgentRequestDTO implements Serializable {
+@AllArgsConstructor
+public class AiClientModelQueryRequestDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * AI智能体ID
+     * 模型ID
      */
-    private String aiAgentId;
+    private String modelId;
 
     /**
-     * 用户消息
+     * API配置ID
      */
-    private String message;
+    private String apiId;
 
     /**
-     * 会话ID
+     * 模型类型：openai、deepseek、claude
      */
-    private String sessionId;
+    private String modelType;
 
     /**
-     * 最大执行步数
+     * 状态：0-禁用，1-启用
      */
-    private Integer maxStep;
+    private Integer status;
+
 
 }

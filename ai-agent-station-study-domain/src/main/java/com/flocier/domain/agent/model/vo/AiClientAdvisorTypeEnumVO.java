@@ -1,6 +1,6 @@
 package com.flocier.domain.agent.model.vo;
 
-import com.flocier.domain.agent.service.armory.factory.element.RagAnswerAdvisor;
+import com.flocier.domain.agent.service.armory.node.factory.element.RagAnswerAdvisor;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -6,7 +6,7 @@ import com.flocier.domain.agent.model.entity.AutoAgentExecuteResultEntity;
 import com.flocier.domain.agent.model.entity.ExecuteCommandEntity;
 import com.flocier.domain.agent.model.vo.AiAgentClientFlowConfigVO;
 import com.flocier.domain.agent.model.vo.AiAgentEnumVO;
-import com.flocier.domain.agent.service.execute.IExecuteStrategy;
+import com.flocier.domain.agent.service.IExecuteStrategy;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
