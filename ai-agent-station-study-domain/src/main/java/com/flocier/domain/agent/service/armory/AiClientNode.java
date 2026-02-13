@@ -44,6 +44,7 @@ public class AiClientNode extends AbstractArmorySupport{
             //对话模型
             OpenAiChatModel chatModel=getBean(aiClientVO.getModelBeanName());
             //MCP服务(目前默认mcp服务都配置在model中)
+            //log.info("clientVO: {}",JSON.toJSONString(aiClientVO));
             List<McpSyncClient> mcpSyncClients = new ArrayList<>();
             List<String> mcpBeanNameList = aiClientVO.getMcpBeanNameList();
             for (String mcpBeanName : mcpBeanNameList) {

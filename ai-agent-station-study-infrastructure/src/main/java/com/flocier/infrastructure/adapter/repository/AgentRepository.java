@@ -531,4 +531,23 @@ public class AgentRepository implements IAgentRepository {
                 .build();
 
     }
+
+    @Override
+    public List<AiAgentClientFlowConfigVO> queryAiClientsByAgentId(String aiAgentId) {
+        List<AiAgentClientFlowConfigVO> aiAgentClientFlowConfigVOS=new ArrayList<>();
+
+        List<AiAgentFlowConfig>flowConfigs=aiAgentFlowConfigDao.queryByAgentId(aiAgentId);
+        for (AiAgentFlowConfig flowConfig : flowConfigs) {
+            AiAgentClientFlowConfigVO configVO = AiAgentClientFlowConfigVO.builder()
+                    .clientId(flowConfig.getClientId())
+                    .clientName(flowConfig.getClientName())
+                    .clientType(flowConfig.getClientType())
+                    .sequence(flowConfig.getSequence())
+                    .stepPrompt(flowConfig.getStepPrompt())
+                    .build();
+
+            aiAgentClientFlowConfigVOS.add(configVO);
+        }
+        return aiAgentClientFlowConfigVOS;
+    }
 }

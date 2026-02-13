@@ -77,6 +77,7 @@ public class AiClientToolMcpNode extends AbstractArmorySupport{
 
                 sseEndpoint = StringUtils.isBlank(sseEndpoint) ? "/sse" : sseEndpoint;
 
+                //log.info("baseUri: {},sseEndpoint: {}",baseUri,sseEndpoint);
                 HttpClientSseClientTransport sseClientTransport = HttpClientSseClientTransport
                         .builder(baseUri) // 使用截取后的 baseUri
                         .sseEndpoint(sseEndpoint) // 使用截取或默认的 sseEndpoint

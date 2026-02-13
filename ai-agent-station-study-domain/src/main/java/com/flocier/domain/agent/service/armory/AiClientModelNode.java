@@ -41,8 +41,9 @@ public class AiClientModelNode extends AbstractArmorySupport{
             }
             List<McpSyncClient> mcpSyncClients=new ArrayList<>();
             for (String mcpId:aiClientModelVO.getToolMcpIds()){
-                McpSyncClient mcpAsyncClient=getBean(AiAgentEnumVO.AI_CLIENT_TOOL_MCP.getBeanName(mcpId));
-                mcpSyncClients.add(mcpAsyncClient);
+                McpSyncClient mcpSyncClient=getBean(AiAgentEnumVO.AI_CLIENT_TOOL_MCP.getBeanName(mcpId));
+                //log.info("mcpId: {},mcpSyncClient: {}",mcpId,JSON.toJSONString(mcpSyncClient));
+                mcpSyncClients.add(mcpSyncClient);
             }
             //实例化对话模型
             OpenAiChatModel chatModel=OpenAiChatModel.builder()
