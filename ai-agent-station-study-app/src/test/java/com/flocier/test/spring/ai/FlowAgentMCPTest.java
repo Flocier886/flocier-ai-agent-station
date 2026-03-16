@@ -4,8 +4,12 @@ import com.alibaba.fastjson.JSON;
 import io.modelcontextprotocol.client.McpClient;
 import io.modelcontextprotocol.client.McpSyncClient;
 import io.modelcontextprotocol.client.transport.HttpClientSseClientTransport;
+import io.modelcontextprotocol.client.transport.HttpClientStreamableHttpTransport;
 import io.modelcontextprotocol.client.transport.ServerParameters;
 import io.modelcontextprotocol.client.transport.StdioClientTransport;
+import io.modelcontextprotocol.client.transport.customizer.McpSyncHttpClientRequestCustomizer;
+import io.modelcontextprotocol.common.McpTransportContext;
+import io.modelcontextprotocol.json.McpJsonMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,9 +20,12 @@ import org.springframework.ai.mcp.SyncMcpToolCallbackProvider;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.ai.openai.api.OpenAiApi;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.net.URI;
+import java.net.http.HttpRequest;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,18 +39,29 @@ public class FlowAgentMCPTest {
         OpenAiChatModel chatModel = OpenAiChatModel.builder()
                 .openAiApi(OpenAiApi.builder()
                         .baseUrl("https://apis.itedus.cn")
-                        .apiKey("sk-IO21QRWX86W3EcL9E770E2104f0145598fEb43Ef5bB13b09")
+                        .apiKey("sk-NoLyjkzzk1pkxFaQD870B7F4D28d4759931b7a507382A11b")
                         .completionsPath("v1/chat/completions")
                         .embeddingsPath("v1/embeddings")
                         .build())
                 .defaultOptions(OpenAiChatOptions.builder()
                         .model("gpt-4.1")
-                        .toolCallbacks(new SyncMcpToolCallbackProvider(stdioMcpClient_Grafana()).getToolCallbacks())
+                        .toolCallbacks(new SyncMcpToolCallbackProvider(Arthas_Mcp()).getToolCallbacks())
                         .build())
                 .build();
 
-        ChatResponse call = chatModel.call(Prompt.builder().messages(new UserMessage("有哪些工具可以使用")).build());
+        ChatResponse call = chatModel.call(Prompt.builder().messages(new UserMessage("执行jvm工具获取内存信息")).build());
         log.info("测试结果:{}", JSON.toJSONString(call.getResult()));
+    }
+
+    public McpSyncClient Arthas_Mcp(){
+        HttpClientStreamableHttpTransport streamableHttpTransport=HttpClientStreamableHttpTransport.builder("http://192.168.100.128:8563")
+                .httpRequestCustomizer((builder, method, endpoint, body, context) -> builder.header("Authorization","Bearer lOT6BBVcp7koaBmXN5wEecz1h7WF7S8DhXkTyAVy3IQmHGKlVN04e595mlsxnUrg"))
+                .endpoint("/mcp")
+                .build();
+        McpSyncClient mcpSyncClient=McpClient.sync(streamableHttpTransport).requestTimeout(Duration.ofMinutes(360)).build();
+        var init = mcpSyncClient.initialize();
+        log.info("Arthas MCP StreamableHttp Initialized: {}", init);
+        return mcpSyncClient;
     }
 
     /**
@@ -61,7 +79,7 @@ public class FlowAgentMCPTest {
                 .env(env)
                 .build();
 
-        var mcpClient = McpClient.sync(new StdioClientTransport(stdioParams))
+        var mcpClient = McpClient.sync(new StdioClientTransport(stdioParams, McpJsonMapper.getDefault()))
                 .requestTimeout(Duration.ofSeconds(100)).build();
 
         var init = mcpClient.initialize();
@@ -91,7 +109,7 @@ public class FlowAgentMCPTest {
                 .env(env)
                 .build();
 
-        var mcpClient = McpClient.sync(new StdioClientTransport(stdioParams))
+        var mcpClient = McpClient.sync(new StdioClientTransport(stdioParams,McpJsonMapper.getDefault()))
                 .requestTimeout(Duration.ofSeconds(100)).build();
 
         var init = mcpClient.initialize();

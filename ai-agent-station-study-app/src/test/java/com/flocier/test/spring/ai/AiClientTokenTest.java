@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.modelcontextprotocol.client.McpClient;
 import io.modelcontextprotocol.client.McpSyncClient;
 import io.modelcontextprotocol.client.transport.HttpClientSseClientTransport;
+import io.modelcontextprotocol.client.transport.HttpClientStreamableHttpTransport;
+import io.modelcontextprotocol.client.transport.customizer.McpSyncHttpClientRequestCustomizer;
+import io.modelcontextprotocol.common.McpTransportContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
 import org.junit.Test;
@@ -15,15 +18,22 @@ import org.springframework.ai.mcp.SyncMcpToolCallbackProvider;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.ai.openai.api.OpenAiApi;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.RestClient;
 
+import java.net.URI;
+import java.net.http.HttpRequest;
 import java.time.Duration;
 
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class AiClientTokenTest {
+    @Autowired
+    private RestClient.Builder builder;
+
     @Test
     public void test(){
         ChatClient chatClient= ChatClient.builder(OpenAiChatModel.builder()
@@ -44,6 +54,7 @@ public class AiClientTokenTest {
                 .user(prompt)
                 .call();
     }
+
     public McpSyncClient sseMcpClient() {
         HttpClientSseClientTransport sseClientTransport = HttpClientSseClientTransport.builder("http://appbuilder.baidu.com/v2/ai_search/mcp/")
                 .sseEndpoint("sse?api_key=bce-v3/ALTAK-D2i7sNgfb9YTf76efrnae/58afda5efb370bd6a9ba7035d19d5bc95000f367")

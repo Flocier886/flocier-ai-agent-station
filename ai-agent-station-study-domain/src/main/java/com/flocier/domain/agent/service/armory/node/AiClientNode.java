@@ -60,7 +60,9 @@ public class AiClientNode extends AbstractArmorySupport {
             //构建client
             ChatClient client=ChatClient.builder(chatModel)
                     .defaultSystem(defaultSystem.toString())
-                    .defaultToolCallbacks(new SyncMcpToolCallbackProvider(mcpSyncClientArray))
+                    .defaultToolCallbacks(SyncMcpToolCallbackProvider.builder()
+                            .mcpClients(mcpSyncClientArray)
+                            .build())
                     .defaultAdvisors(advisorArray)
                     .build();
             //注册bean对象

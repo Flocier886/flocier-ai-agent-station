@@ -49,7 +49,10 @@ public class AiClientModelNode extends AbstractArmorySupport {
                     .defaultOptions(
                             OpenAiChatOptions.builder()
                                     .model(aiClientModelVO.getModelName())
-                                    .toolCallbacks(new SyncMcpToolCallbackProvider(mcpSyncClients).getToolCallbacks())
+                                    .toolCallbacks(SyncMcpToolCallbackProvider.builder()
+                                            .mcpClients(mcpSyncClients)
+                                            .build()
+                                            .getToolCallbacks())
                                     .build()
                     )
                     .build();

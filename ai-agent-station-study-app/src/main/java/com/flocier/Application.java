@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {
+        org.springframework.ai.mcp.client.webflux.autoconfigure.SseWebFluxTransportAutoConfiguration.class
+})
 @Configurable
 public class Application {
 
