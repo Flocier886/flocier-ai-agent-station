@@ -37,6 +37,7 @@ public class RagAnswerAdvisor implements BaseAdvisor {
         this.userTextAdvise = "\nContext information is below, surrounded by ---------------------\n\n---------------------\n{question_answer_context}\n---------------------\n\nGiven the context and provided history information and not prior knowledge,\nreply to the user comment. If the answer is not in the context, inform\nthe user that you can't answer the question.\n";
     }
 
+    //TODO 优化性能时可以尝试在这里打印日志看每个Document的text长度（即大小）
     @Override
     public ChatClientRequest before(ChatClientRequest chatClientRequest, AdvisorChain advisorChain) {
         HashMap<String, Object> context = new HashMap(chatClientRequest.context());

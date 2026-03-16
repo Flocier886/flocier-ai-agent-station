@@ -4,10 +4,12 @@ import cn.bugstack.wrench.design.framework.tree.StrategyHandler;
 import com.flocier.domain.agent.model.entity.AutoAgentExecuteResultEntity;
 import com.flocier.domain.agent.model.entity.ExecuteCommandEntity;
 import com.flocier.domain.agent.model.vo.AiAgentClientFlowConfigVO;
+import com.flocier.domain.agent.model.vo.AiClientAdvisorVO;
 import com.flocier.domain.agent.model.vo.AiClientTypeEnumVO;
 import com.flocier.domain.agent.service.execute.auto.step.factory.DefaultAutoAgentExecuteStrategyFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +37,7 @@ public class Step1AnalyzerNode extends AbstractExecuteSupport{
         String analysisResult=chatClient
                 .prompt(analysisPrompt)
                 .advisors(a->a
-                        .param(CHAT_MEMORY_CONVERSATION_ID_KEY,requestParameter.getSessionId())
+                        .param(ChatMemory.CONVERSATION_ID,requestParameter.getSessionId())
                         .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY,1024))
                 .call().content();
         //输出结果不能为空

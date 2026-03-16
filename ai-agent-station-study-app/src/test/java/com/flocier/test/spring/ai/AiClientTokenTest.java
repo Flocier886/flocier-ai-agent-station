@@ -35,7 +35,7 @@ public class AiClientTokenTest {
                         .build())
                 .defaultOptions(OpenAiChatOptions.builder()
                         .model("gpt-4.1")
-                        .toolCallbacks(new SyncMcpToolCallbackProvider(sseMcpClient()).getToolCallbacks())
+                        //.toolCallbacks(new SyncMcpToolCallbackProvider(sseMcpClient()).getToolCallbacks())
                         .build())
                 .build()).build();
         String prompt="搜索小傅哥技术博客有哪些项目";

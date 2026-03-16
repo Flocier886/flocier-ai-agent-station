@@ -37,7 +37,7 @@ public class Step3QualitySupervisorNode extends AbstractExecuteSupport {
         parseSupervisionResult(dynamicContext, supervisionResult,requestParameter.getSessionId());
         //将结果存入动态上下文
         dynamicContext.setValue("supervisionResult",supervisionResult);
-        //判断质量是否打标
+        //判断质量是否达标
         if (supervisionResult.contains("是否通过: FAIL")){
             log.info("❌ 质量检查未通过，需要重新执行");
             dynamicContext.setCurrentTask("根据质量监督的建议重新执行任务");

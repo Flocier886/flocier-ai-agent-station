@@ -3,6 +3,7 @@ package com.flocier.test.spring.ai;
 import com.alibaba.fastjson.JSON;
 import io.modelcontextprotocol.client.McpClient;
 import io.modelcontextprotocol.client.McpSyncClient;
+import io.modelcontextprotocol.client.transport.HttpClientSseClientTransport;
 import io.modelcontextprotocol.client.transport.ServerParameters;
 import io.modelcontextprotocol.client.transport.StdioClientTransport;
 import lombok.extern.slf4j.Slf4j;
@@ -37,11 +38,11 @@ public class FlowAgentMCPTest {
                         .build())
                 .defaultOptions(OpenAiChatOptions.builder()
                         .model("gpt-4.1")
-                        .toolCallbacks(new SyncMcpToolCallbackProvider(stdioMcpClientElasticsearch()).getToolCallbacks())
+                        .toolCallbacks(new SyncMcpToolCallbackProvider(stdioMcpClient_Grafana()).getToolCallbacks())
                         .build())
                 .build();
 
-        ChatResponse call = chatModel.call(Prompt.builder().messages(new UserMessage("通过ES查询被限流的用户，给出被限流用户列表。")).build());
+        ChatResponse call = chatModel.call(Prompt.builder().messages(new UserMessage("有哪些工具可以使用")).build());
         log.info("测试结果:{}", JSON.toJSONString(call.getResult()));
     }
 
@@ -71,5 +72,33 @@ public class FlowAgentMCPTest {
 
     }
 
+    public McpSyncClient stdioMcpClient_Grafana() {
+        Map<String, String> env = new HashMap<>();
+        env.put("GRAFANA_URL", "http://192.168.100.128:3000");
+        env.put("GRAFANA_API_KEY", "glsa_XlQ49CFV7ZEdppcAhaL7IXIFyudOrS1p_b048562c");
+
+        var stdioParams = ServerParameters.builder("docker")
+                .args("run",
+                        "--rm",
+                        "-i",
+                        "-e",
+                        "GRAFANA_URL",
+                        "-e",
+                        "GRAFANA_API_KEY",
+                        "mcp/grafana",
+                        "-t",
+                        "stdio")
+                .env(env)
+                .build();
+
+        var mcpClient = McpClient.sync(new StdioClientTransport(stdioParams))
+                .requestTimeout(Duration.ofSeconds(100)).build();
+
+        var init = mcpClient.initialize();
+        log.info("Stdio MCP Initialized: {}", init);
+
+        return mcpClient;
+
+    }
 
 }

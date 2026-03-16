@@ -55,7 +55,7 @@ public class AiClientLoadDataStrategy implements ILoadDataStrategy {
             log.info("查询配置数据(ai_client) {}", clientIdList);
             return repository.AiClientVOByClientIds(clientIdList);
         }, threadPoolExecutor);
-        //将数据存入上下文
+        //将数据存入上下文,这里allOf只写一个也可以顺利执行因为后面的join会等待执行结束才继续
         CompletableFuture.allOf(aiClientApiListFuture).thenRun(()->{
             dynamicContext.setValue(AiAgentEnumVO.AI_CLIENT_API.getDataName(),aiClientApiListFuture.join());
             dynamicContext.setValue(AiAgentEnumVO.AI_CLIENT_MODEL.getDataName(), aiClientModelListFuture.join());
