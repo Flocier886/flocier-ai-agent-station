@@ -45,11 +45,11 @@ public class FlowAgentMCPTest {
                         .build())
                 .defaultOptions(OpenAiChatOptions.builder()
                         .model("gpt-4.1")
-                        .toolCallbacks(new SyncMcpToolCallbackProvider(Arthas_Mcp()).getToolCallbacks())
+                        .toolCallbacks(new SyncMcpToolCallbackProvider(stdioMcpClientElasticsearch()).getToolCallbacks())
                         .build())
                 .build();
 
-        ChatResponse call = chatModel.call(Prompt.builder().messages(new UserMessage("执行jvm工具获取内存信息")).build());
+        ChatResponse call = chatModel.call(Prompt.builder().messages(new UserMessage("有哪些工具可以使用")).build());
         log.info("测试结果:{}", JSON.toJSONString(call.getResult()));
     }
 

@@ -48,6 +48,11 @@ public class AiClientToolMcpVO {
      */
     private TransportConfigStdio transportConfigStdio;
 
+    /**
+     * 传输配置 - streamableHttp
+     */
+    private TransportConfigStreamableHttp transportConfigStreamableHttp;
+
     @Data
     @Builder
     @AllArgsConstructor
@@ -55,6 +60,16 @@ public class AiClientToolMcpVO {
     public static class TransportConfigSse {
         private String baseUri;
         private String sseEndpoint;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TransportConfigStreamableHttp{
+        private String baseUri;
+        private String endPoint;
+        private Map<String,String>headers;
     }
 
     @Data

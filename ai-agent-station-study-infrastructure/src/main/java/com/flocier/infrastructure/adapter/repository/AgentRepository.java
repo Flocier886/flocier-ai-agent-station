@@ -9,6 +9,8 @@ import com.flocier.infrastructure.dao.*;
 import com.flocier.infrastructure.dao.po.*;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
@@ -188,12 +190,12 @@ public class AgentRepository implements IAgentRepository {
 
                                 try {
                                     if ("sse".equals(transportType)) {
-                                        // TODO解析SSE配置
+                                        // 解析SSE配置
                                         ObjectMapper objectMapper = new ObjectMapper();
                                         AiClientToolMcpVO.TransportConfigSse transportConfigSse = objectMapper.readValue(transportConfig, AiClientToolMcpVO.TransportConfigSse.class);
                                         mcpVO.setTransportConfigSse(transportConfigSse);
                                     } else if ("stdio".equals(transportType)) {
-                                        // TODO解析STDIO配置
+                                        // 解析STDIO配置
                                         Map<String, AiClientToolMcpVO.TransportConfigStdio.Stdio> stdio = JSON.parseObject(transportConfig,
                                                 new TypeReference<>() {
                                                 });
@@ -202,6 +204,11 @@ public class AgentRepository implements IAgentRepository {
                                         transportConfigStdio.setStdio(stdio);
 
                                         mcpVO.setTransportConfigStdio(transportConfigStdio);
+                                    } else if ("streamableHttp".equals(transportType)){
+                                        // 解析StreamableHttp配置
+                                        ObjectMapper objectMapper=new ObjectMapper();
+                                        AiClientToolMcpVO.TransportConfigStreamableHttp transportConfigStreamableHttp=objectMapper.readValue(transportConfig,AiClientToolMcpVO.TransportConfigStreamableHttp.class);
+                                        mcpVO.setTransportConfigStreamableHttp(transportConfigStreamableHttp);
                                     }
                                 } catch (Exception e) {
                                     log.error("解析传输配置失败: {}", e.getMessage(), e);
@@ -594,6 +601,7 @@ public class AgentRepository implements IAgentRepository {
         AiClientRagOrder aiRagOrder = new AiClientRagOrder();
         aiRagOrder.setRagName(aiRagOrderVO.getRagName());
         aiRagOrder.setKnowledgeTag(aiRagOrderVO.getKnowledgeTag());
+        aiRagOrder.setRagId(RandomStringUtils.randomNumeric(4));
         aiRagOrder.setStatus(1);
         aiClientRagOrderDao.insert(aiRagOrder);
     }

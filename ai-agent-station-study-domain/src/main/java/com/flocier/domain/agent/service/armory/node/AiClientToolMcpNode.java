@@ -9,8 +9,11 @@ import com.flocier.domain.agent.service.armory.node.factory.DefaultArmoryStrateg
 import io.modelcontextprotocol.client.McpClient;
 import io.modelcontextprotocol.client.McpSyncClient;
 import io.modelcontextprotocol.client.transport.HttpClientSseClientTransport;
+import io.modelcontextprotocol.client.transport.HttpClientStreamableHttpTransport;
 import io.modelcontextprotocol.client.transport.ServerParameters;
 import io.modelcontextprotocol.client.transport.StdioClientTransport;
+import io.modelcontextprotocol.client.transport.customizer.McpSyncHttpClientRequestCustomizer;
+import io.modelcontextprotocol.common.McpTransportContext;
 import io.modelcontextprotocol.json.McpJsonMapper;
 import io.modelcontextprotocol.json.TypeRef;
 import jakarta.annotation.Resource;
@@ -19,9 +22,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpRequest;
 import java.time.Duration;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -110,6 +114,39 @@ public class AiClientToolMcpNode extends AbstractArmorySupport {
                 log.info("Tool Stdio MCP Initialized {}", init_stdio);
                 return mcpClient;
 
+            }
+            case "streamableHttp"->{
+                AiClientToolMcpVO.TransportConfigStreamableHttp transportConfigStreamableHttp = aiClientToolMcpVO.getTransportConfigStreamableHttp();
+                String originalBaseUri=transportConfigStreamableHttp.getBaseUri();
+                String baseUri;
+                String endPoint;
+                int endPointIndex=originalBaseUri.indexOf("mcp");
+
+                if(endPointIndex!=-1){
+                    baseUri=originalBaseUri.substring(0, endPointIndex - 1);
+                    endPoint=originalBaseUri.substring(endPointIndex-1);
+                } else {
+                    baseUri=originalBaseUri;
+                    endPoint= transportConfigStreamableHttp.getEndPoint();
+                }
+                //默认endpoint为"/mcp"
+                endPoint=StringUtils.isBlank(endPoint) ? "/mcp" : endPoint;
+
+                Map<String,String> headers = Optional.ofNullable(transportConfigStreamableHttp.getHeaders())
+                        .orElse(Collections.emptyMap());
+
+                HttpClientStreamableHttpTransport httpClientStreamableHttpTransport=HttpClientStreamableHttpTransport.builder(baseUri)
+                        .endpoint(endPoint)
+                        .httpRequestCustomizer((builder, method, endpoint, body, context)->{
+                            headers.forEach(builder::header);
+                        })
+                        .build();
+
+                McpSyncClient mcpSyncClient=McpClient.sync(httpClientStreamableHttpTransport).requestTimeout(Duration.ofMinutes(aiClientToolMcpVO.getRequestTimeout())).build();
+                var init_streamableHttp = mcpSyncClient.initialize();
+
+                log.info("Tool StreamableHttp MCP Initialized {}", init_streamableHttp);
+                return mcpSyncClient;
             }
         }
         throw new RuntimeException("err! transportType " + transportType + " not exist!");
