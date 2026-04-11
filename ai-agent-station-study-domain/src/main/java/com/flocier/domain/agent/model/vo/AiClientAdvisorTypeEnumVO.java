@@ -21,6 +21,8 @@ public enum AiClientAdvisorTypeEnumVO {
         @Override
         public Advisor createAdvisor(AiClientAdvisorVO aiClientAdvisorVO, VectorStore vectorStore) {
             AiClientAdvisorVO.ChatMemory chatMemory=aiClientAdvisorVO.getChatMemory();
+            //这里设置的MessageWindowChatMemory是指会话的存储方法，这里并没有给PromptChatMemoryAdvisor设置conversionId，也就是说所以会话都只会存在一个List中而不是按桶进行Map存储，如果调用client时指明用哪个维度查询记忆也会无效
+            //TODO这里可以考虑加conversionId
             return PromptChatMemoryAdvisor.builder(
                             MessageWindowChatMemory.builder()
                                     .maxMessages(chatMemory.getMaxMessages())

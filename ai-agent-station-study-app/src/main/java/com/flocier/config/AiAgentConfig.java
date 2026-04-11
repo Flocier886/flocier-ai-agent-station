@@ -30,7 +30,7 @@ public class AiAgentConfig {
 
     @Bean
     public TokenTextSplitter tokenTextSplitter() {
-        return new TokenTextSplitter();
+        return new TokenTextSplitter(2000,50,50,0,true);
     }
 
 

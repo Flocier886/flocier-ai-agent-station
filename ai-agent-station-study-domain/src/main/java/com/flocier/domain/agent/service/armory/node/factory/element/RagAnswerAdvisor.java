@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-//TODO
 public class RagAnswerAdvisor implements BaseAdvisor {
     private final VectorStore vectorStore;
     private final SearchRequest searchRequest;
@@ -37,24 +36,32 @@ public class RagAnswerAdvisor implements BaseAdvisor {
         this.userTextAdvise = "\nContext information is below, surrounded by ---------------------\n\n---------------------\n{question_answer_context}\n---------------------\n\nGiven the context and provided history information and not prior knowledge,\nreply to the user comment. If the answer is not in the context, inform\nthe user that you can't answer the question.\n";
     }
 
-    //TODO 优化性能时可以尝试在这里打印日志看每个Document的text长度（即大小）
+    //Rag知识库动态加载进prompt
     @Override
     public ChatClientRequest before(ChatClientRequest chatClientRequest, AdvisorChain advisorChain) {
+        //这里的context相当于advisor之间的共享内存，最开始可能为一个空的Map
         HashMap<String, Object> context = new HashMap(chatClientRequest.context());
 
         String userText = chatClientRequest.prompt().getUserMessage().getText();
         String advisedUserText = userText + System.lineSeparator() + this.userTextAdvise;
 
-        String query = (new PromptTemplate(userText)).render();
+        PromptTemplate template = new PromptTemplate("{user_input}");
+        String query = template.render(Map.of("user_input", userText));
 
-        SearchRequest searchRequestToUse = SearchRequest.from(this.searchRequest).query(query).filterExpression(this.doGetFilterExpression(context)).build();
+        SearchRequest searchRequestToUse = SearchRequest
+                .from(this.searchRequest)
+                .query(query)
+                .filterExpression(this.doGetFilterExpression(context))
+                .build();
         List<Document> documents = this.vectorStore.similaritySearch(searchRequestToUse);
         context.put("qa_retrieved_documents", documents);
 
-        String documentContext = documents.stream().map(Document::getText).collect(Collectors.joining(System.lineSeparator()));
+        String documentContext = documents.stream()
+                .map(Document::getText)
+                .collect(Collectors.joining(System.lineSeparator()));
         Map<String, Object> advisedUserParams = new HashMap(chatClientRequest.context());
         advisedUserParams.put("question_answer_context", documentContext);
-
+        //这里多加了.context参数，可用于后续after将里面的内容传出去
         return ChatClientRequest.builder()
                 .prompt(Prompt.builder().messages(new UserMessage(advisedUserText), new AssistantMessage(JSON.toJSONString(advisedUserParams))).build())
                 .context(advisedUserParams)
@@ -63,10 +70,11 @@ public class RagAnswerAdvisor implements BaseAdvisor {
 
     @Override
     public ChatClientResponse after(ChatClientResponse chatClientResponse, AdvisorChain advisorChain) {
+        //将client调用过程中的上下文中的检索文档放入最终的ChatResponse中，可用于将数据展示给开发者或前端
         ChatResponse.Builder chatResponseBuilder = ChatResponse.builder().from(chatClientResponse.chatResponse());
         chatResponseBuilder.metadata("qa_retrieved_documents", chatClientResponse.context().get("qa_retrieved_documents"));
         ChatResponse chatResponse = chatResponseBuilder.build();
-
+        //本质上context 是“内部流转数据”，而metadata 是“对外输出数据”
         return ChatClientResponse.builder()
                 .chatResponse(chatResponse)
                 .context(chatClientResponse.context())

@@ -124,7 +124,8 @@ public class Step4ExecuteStepsNode extends AbstractExecuteSupport{
      */
     private void executeStep(ChatClient executorChatClient, Integer stepNumber, String stepKey, String stepContent, DefaultFlowAgentExecuteStrategyFactory.DynamicContext dynamicContext) {
         log.info("\n--- 开始执行 {} ---", stepKey);
-        log.info("步骤内容: {}", stepContent.substring(0, Math.min(200, stepContent.length())) + "...");
+        //log.info("步骤内容: {}", stepContent.substring(0, Math.min(200, stepContent.length())) + "...");
+        log.info("步骤内容: {}", stepContent);
 
         try {
             // 更新执行上下文
@@ -139,7 +140,8 @@ public class Step4ExecuteStepsNode extends AbstractExecuteSupport{
                     .content();
 
             assert executionResult != null;
-            log.info("步骤 {} 执行结果: {}", stepNumber, executionResult.substring(0, Math.min(150, executionResult.length())) + "...");
+            //log.info("步骤 {} 执行结果: {}", stepNumber, executionResult.substring(0, Math.min(150, executionResult.length())) + "...");
+            log.info("步骤 {} 执行结果: {}", stepNumber, executionResult);
 
             // 保存执行结果
             dynamicContext.setValue("step" + stepNumber + "Result", executionResult);
@@ -212,10 +214,11 @@ public class Step4ExecuteStepsNode extends AbstractExecuteSupport{
                 dynamicContext.getCurrentTask() + "\n\n" +
                 "**执行要求:**\n" +
                 "1. 仔细分析步骤内容，理解需要执行的具体任务\n" +
-                "2. 如果涉及MCP工具调用，请使用相应的工具\n" +
-                "3. 提供详细的执行过程和结果\n" +
-                "4. 如果遇到问题，请说明具体的错误信息\n" +
-                "5. **重要**: 执行完成后，必须在回复末尾明确输出执行结果，格式如下:\n" +
+                "2. 如果涉及MCP工具调用，请使用相应的工具，如果任务的调用方式与系统提示词冲突，请按照系统提示词的方式调用\n" +
+                "3. 如果需要用到相关Rag知识库信息，请查询知识库信息并结合使用MCP工具" +
+                "4. 提供详细的执行过程和结果\n" +
+                "5. 如果遇到问题，请说明具体的错误信息\n" +
+                "6. **重要**: 执行完成后，必须在回复末尾明确输出执行结果，格式如下:\n" +
                 "   ```\n" +
                 "   === 执行结果 ===\n" +
                 "   状态: [成功/失败]\n" +

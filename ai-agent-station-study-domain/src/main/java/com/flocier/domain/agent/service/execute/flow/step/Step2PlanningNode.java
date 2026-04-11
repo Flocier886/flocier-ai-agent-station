@@ -70,6 +70,15 @@ public class Step2PlanningNode extends AbstractExecuteSupport{
 
         // 1. 任务分析部分 - 通用化用户需求分析
         prompt.append("# 智能执行计划生成\n\n");
+        prompt.append("## ⚠️ 【最高优先级规则】所有步骤必须遵守\n");
+        prompt.append("## ⚠️ 【最高优先级规则】所有步骤必须遵守\n");
+        prompt.append("1. 前置分析阶段提供的**所有工具参数示例、调用方式、【非真实业务参数】仅作为功能参考**，严禁直接使用\n");
+        prompt.append("2. 工具的**正确使用约束、调用规范、参数格式**必须以**当前系统提示词（System Prompt）为唯一标准**\n");
+        prompt.append("3. 若分析内容与系统提示词冲突 → **无条件服从系统prompt，忽略前置分析示例**\n");
+        prompt.append("4. 真实业务参数、索引名、字段名、服务名 → 必须从自身系统prompt + RAG知识库获取\n");
+        prompt.append("5. 无对应信息时严禁编造，必须标注：【待补充真实业务参数】\n");
+        prompt.append("6. 所有示例仅用于格式参考，严禁作为真实执行值使用\n\n");
+
         prompt.append("## 📋 用户需求分析\n");
         prompt.append("**完整用户请求：**\n");
         prompt.append("```\n");
@@ -93,7 +102,7 @@ public class Step2PlanningNode extends AbstractExecuteSupport{
         prompt.append("### 工具选择原则\n");
         prompt.append("- **精确匹配**: 每个步骤必须使用上述工具清单中的确切函数名称\n");
         prompt.append("- **功能对应**: 根据MCP工具分析结果中的匹配度选择最适合的工具\n");
-        prompt.append("- **参数完整**: 确保每个工具调用都包含必需的参数说明\n");
+        prompt.append("- **参数完整**: 确保每个工具调用都包含必需的参数说明（真实值从系统prompt/RAG获取）\n");
         prompt.append("- **依赖关系**: 考虑工具间的数据流转和依赖关系\n\n");
 
         // 4. 执行计划要求
@@ -101,15 +110,15 @@ public class Step2PlanningNode extends AbstractExecuteSupport{
         prompt.append("请基于上述用户详细需求、MCP工具分析结果和工具映射验证要求，生成精确的执行计划：\n\n");
         prompt.append("### 核心要求\n");
         prompt.append("1. **完整保留用户需求**: 必须将用户请求中的所有详细信息完整传递到每个执行步骤中\n");
-        prompt.append("2. **严格遵循MCP分析结果**: 必须根据工具能力分析中的匹配度和推荐方案制定步骤\n");
+        prompt.append("2. **严格遵循MCP分析结果（仅能力，不使用参数示例）**: 必须根据工具能力分析中的匹配度和推荐方案制定步骤\n");
         prompt.append("3. **精确工具映射**: 每个步骤必须使用确切的函数名称，不允许使用模糊或错误的工具名\n");
-        prompt.append("4. **参数完整性**: 所有工具调用必须包含用户原始需求中的完整参数信息\n");
+        prompt.append("4. **参数完整性**: 所有工具调用必须包含用户原始需求中的完整参数信息（真实值从系统prompt/RAG获取）\n");
         prompt.append("5. **依赖关系明确**: 基于MCP分析结果中的执行策略建议安排步骤顺序\n");
         prompt.append("6. **合理粒度**: 避免过度细分，每个步骤应该是完整且独立的功能单元\n\n");
 
         // 4. 格式规范 - 通用化任务格式
         prompt.append("### 格式规范\n");
-        prompt.append("请使用以下Markdown格式生成3-5个执行步骤：\n");
+        prompt.append("请使用以下Markdown格式生成1-5个执行步骤：\n");
         prompt.append("```markdown\n");
         prompt.append("# 执行步骤规划\n\n");
         prompt.append("[ ] 第1步：[步骤描述]\n");
@@ -123,8 +132,8 @@ public class Step2PlanningNode extends AbstractExecuteSupport{
         prompt.append("- **使用工具**: [必须使用确切的函数名称]\n");
         prompt.append("- **工具匹配度**: [引用MCP分析结果中的匹配度评估]\n");
         prompt.append("- **依赖步骤**: [前置步骤序号，如无依赖则填写'无']\n");
-        prompt.append("- **执行方法**: [基于MCP分析结果的具体执行策略，包含工具调用参数]\n");
-        prompt.append("- **工具参数**: [详细的参数说明和示例值，必须包含用户原始需求中的所有相关信息]\n");
+        prompt.append("- **执行方法**: [基于MCP分析结果的具体执行策略，参数从系统prompt/RAG获取]\n");
+        prompt.append("- **工具参数**: [仅格式说明，真实值从系统prompt/RAG获取；若无则标注【待补充真实业务参数】；必须包含用户原始需求中的所有相关信息]\n");
         prompt.append("- **需求传递**: [明确说明如何将用户的详细要求传递到此步骤中]\n");
         prompt.append("- **预期输出**: [期望的最终结果]\n");
         prompt.append("- **成功标准**: [判断任务完成的标准]\n");
@@ -137,7 +146,7 @@ public class Step2PlanningNode extends AbstractExecuteSupport{
         prompt.append("- **需求完整性原则**: 确保用户请求中的所有详细信息都被完整保留和传递\n");
         prompt.append("- **步骤分离原则**: 每个步骤应该专注于单一功能，避免混合不同类型的操作\n");
         prompt.append("- **工具映射原则**: 每个步骤应明确使用哪个具体的MCP工具\n");
-        prompt.append("- **参数传递原则**: 确保用户的详细要求能够准确传递到工具参数中\n");
+        prompt.append("- **参数传递原则**: 确保用户的详细要求能够准确传递到工具参数中，真实参数从系统prompt/RAG获取，不使用示例假参数\n");
         prompt.append("- **依赖关系原则**: 合理安排步骤顺序，确保前置条件得到满足\n");
         prompt.append("- **结果输出原则**: 每个步骤都应有明确的输出结果和成功标准\n\n");
 
@@ -159,7 +168,7 @@ public class Step2PlanningNode extends AbstractExecuteSupport{
         prompt.append("5. **时长估算**: 基于步骤复杂度合理估算\n");
         prompt.append("6. **工具选择**: 从可用工具中选择最适合的，必须使用完整的函数名称\n");
         prompt.append("7. **依赖关系**: 明确步骤间的先后顺序\n");
-        prompt.append("8. **执行细节**: 提供具体可操作的方法，包含详细的参数说明和用户需求传递\n");
+        prompt.append("8. **执行细节**: 提供具体可操作的方法，包含详细的参数说明和用户需求传递，真实参数从系统prompt/RAG获取\n");
         prompt.append("9. **需求传递**: 确保用户的所有详细要求都能准确传递到相应的执行步骤中\n");
         prompt.append("10. **功能独立**: 确保每个步骤功能独立，避免混合不同类型的操作\n");
         prompt.append("11. **工具映射**: 每个步骤必须明确指定使用的MCP工具函数名称\n");
@@ -184,6 +193,8 @@ public class Step2PlanningNode extends AbstractExecuteSupport{
         prompt.append("- [ ] 工具选择恰当\n");
         prompt.append("- [ ] 依赖关系清晰\n");
         prompt.append("- [ ] 执行方法具体可操作\n");
+        prompt.append("- [ ] 未使用任何前置分析中的假参数\n");
+        prompt.append("- [ ] 真实参数均来自系统prompt/RAG，未知则标注【待补充】\n");
         prompt.append("- [ ] 成功标准明确可衡量\n\n");
 
         prompt.append("现在请开始生成Markdown格式的执行步骤规划：\n");

@@ -44,10 +44,10 @@ spring:
   ai:
     openai:
       base-url: https://apis.itedus.cn
-      api-key: sk-NoLyjkzzk1pkxFaQD870B7F4D28d4759931b7a507382A11b
+      api-key: sk-0hpvFDHD4i2iizuSF68eC8114a9a411aA4C187Ac3322959d
     agent:
       auto-config:
-        enabled: true
+        enabled: false
         client-ids: 6101
 #        client-ids: 2101,2102,2103
 #        client-ids: 3101,3102,3103,3104,4101,4102,4103,4104
