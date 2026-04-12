@@ -1,8 +1,8 @@
 # 基础镜像，可以先执行 docker pull openjdk:17-jdk-slim
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk
 
 # 作者
-MAINTAINER xiaofuge
+MAINTAINER flocier
 
 # 配置
 ENV PARAMS=""
